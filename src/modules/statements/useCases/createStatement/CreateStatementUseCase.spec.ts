@@ -16,21 +16,47 @@ describe("Create statement", () => {
     createStatementUseCase = new CreateStatementUseCase(usersRepositoryInMemory, statementRepositoryInMemory);
   })
 
-  it("should be able to create statement", async () => {
+  it("should be able to create statement deposit", async () => {
     const user = await usersRepositoryInMemory.create({
       email: "test@test.com",
       name: "Test user",
       password: "123"
     });
 
-    const statement = await createStatementUseCase.execute({
+    const statement_deposit = await createStatementUseCase.execute({
       amount: 10,
       description: "deposit test",
       type: OperationType.DEPOSIT,
       user_id: String(user.id)
     })
 
-    expect(statement).toHaveProperty("id");
+    expect(statement_deposit).toHaveProperty("id");
+    expect(statement_deposit.amount).toBe(10);
+  })
+
+  it("should be able to create statement withdraw", async () => {
+    const user = await usersRepositoryInMemory.create({
+      email: "test@test.com",
+      name: "Test user",
+      password: "123"
+    });
+
+    await createStatementUseCase.execute({
+      amount: 10,
+      description: "deposit test",
+      type: OperationType.DEPOSIT,
+      user_id: String(user.id)
+    })
+
+    const statement_withdraw = await createStatementUseCase.execute({
+      amount: 5,
+      description: "Withdraw test",
+      type: OperationType.WITHDRAW,
+      user_id: String(user.id)
+    })
+
+    expect(statement_withdraw).toHaveProperty("id");
+    expect(statement_withdraw.amount).toBe(5);
   })
 
   it("should not be able to create statement with user nonexistent", async () => {
