@@ -25,11 +25,25 @@ describe("Get balance", () => {
       password: "123"
     });
 
+    const user_sender = await usersRepositoryInMemory.create({
+      email: "user_sender@test.com",
+      name: "Test user",
+      password: "123"
+    });
     await createStatementUseCase.execute({
-      amount: 10,
+      amount: 20,
       description: 'deposit test',
       type: OperationType.DEPOSIT,
-      user_id: String(user.id)
+      user_id: String(user_sender.id),
+      sender_id: String(user_sender.id)
+    })
+
+    await createStatementUseCase.execute({
+      amount: 10,
+      description: 'transfer test',
+      type: OperationType.DEPOSIT,
+      user_id: String(user.id),
+      sender_id: String(user_sender.id)
     })
 
     const { balance } = await getBalaceUseCase.execute({

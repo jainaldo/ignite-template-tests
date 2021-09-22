@@ -11,12 +11,15 @@ let connection: Connection;
 let token: any;
 // let id_statement: string;
 let id: string;
+// let id_sender: string;
 
 describe("Create Statement Controller", () => {
   beforeAll(async () => {
     connection = await createConnection();
 
+
     await connection.runMigrations();
+
 
     id = uuidV4();
     const password = await hash("test", 8);
@@ -26,12 +29,18 @@ describe("Create Statement Controller", () => {
       values('${id}', 'test', 'test@test.com.br','${password}')
     `
     );
+    // id_sender = uuidV4();
+    // await connection.query(
+    //   `INSERT INTO USERS(id, name, email, password)
+    //   values('${id_sender}', 'sender', 'sender@test.com.br','${password}')
+    // `
+    // );
 
     // id_statement = uuidV4();
 
     // await connection.query(
-    //   `INSERT INTO STATEMENTS(id, amount, description, type, user_id)
-    //   values('${id_statement}', '10', 'deposit test','deposit', '${id}')
+    //   `INSERT INTO STATEMENTS(id, amount, description, type, user_id, sender_id)
+    //   values('${id_statement}', '10', 'deposit test','deposit', '${id}', '${id_sender}')
     // `);
   });
 
@@ -114,5 +123,24 @@ describe("Create Statement Controller", () => {
 
     expect(response.status).toBe(400);
   })
+
+  // it("should be able to create statement transfer", async () => {
+  //   const { secret, expiresIn } = authConfig.jwt;
+
+  //   token = sign({}, secret, {
+  //     subject: id,
+  //     expiresIn,
+  //   });
+
+  //   const response = await request(app).post(`/api/v1/statements/transfers/${id}`).send({
+  //     amount: 5,
+  //     description: "Tranferencia"
+  //   }).set({
+  //     Authorization: `Bearer ${token}`
+  //   });
+
+  //   expect(response.status).toBe(201);
+  //   expect(response.body.amount).toBe(5);
+  // })
 
 })

@@ -11,6 +11,7 @@ let connection: Connection;
 let token: any;
 let id_statement: string;
 let id: string;
+let id_sender: string;
 
 describe("Get Statement Operation Controller", () => {
   beforeAll(async () => {
@@ -27,11 +28,19 @@ describe("Get Statement Operation Controller", () => {
     `
     );
 
+    id_sender = uuidV4();
+
+    await connection.query(
+      `INSERT INTO USERS(id, name, email, password)
+      values('${id_sender}', 'test_sender', 'test_sender@test.com.br','${password}')
+    `
+    );
+
     id_statement = uuidV4();
 
     await connection.query(
-      `INSERT INTO STATEMENTS(id, amount, description, type, user_id)
-      values('${id_statement}', '10', 'deposit test','deposit', '${id}')
+      `INSERT INTO STATEMENTS(id, amount, description, type, user_id, sender_id)
+      values('${id_statement}', '10', 'deposit test','deposit', '${id}', '${id_sender}')
     `);
   });
 
